@@ -1,0 +1,27 @@
+<main class="main">
+  <div class="Top">
+    <h1 class="tital">Vier Gewinnt</h1>
+    <p class="text" id="turnText">It's blue turn</p>
+  </div>
+
+  <div class="bottom">
+    <div class="topGrid">
+      <div *ngFor="let Bildcell of touchBoard;let i = index" class="topCell" (click)="handleClick(i)">
+        <img [src]="Bildcell" alt="Feld" class=" pfleibild"/>
+      </div>
+    </div>
+    <div class="grid">
+      <div *ngFor="let row of board; let i = index" class="row">
+        <div
+          *ngFor="let cell of row; let j = index"
+          [ngStyle]="{ color: getCellColor(cell) }"
+          class="cell">
+          {{ board[i][j] }}
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</main>

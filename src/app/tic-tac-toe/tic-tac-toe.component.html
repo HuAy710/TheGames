@@ -1,0 +1,25 @@
+<main class="main">
+  <div class="Top">
+    <h1 class="tital">Tic Tac Toe</h1>
+    <p class="text" id="turnText">It's X turn</p>
+  </div>
+
+  <div class="bottom">
+
+    <div class="grid">
+      <div *ngFor="let row of board; let i = index" class="row">
+        <div
+          *ngFor="let cell of row; let j = index"
+          class="cell"
+          [ngStyle]="{ color: getCellColor(cell) }"
+          (click)="handleClick(i, j)"
+        >
+          {{ board[i][j] }}
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</main>
