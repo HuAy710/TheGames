@@ -1,0 +1,17 @@
+services:
+  database:
+    image: postgres:latest
+    container_name: webShopContainer
+    user: root
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: webshop
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - "pgdata:/var/lib/postgresql/data"
+
+volumes:
+  pgdata:
+    driver: local
