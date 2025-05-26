@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../user.service';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-vier-gewinnt',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './vier-gewinnt.component.html',
-  styleUrl: './vier-gewinnt.component.scss'
+  styleUrl: './vier-gewinnt.component.scss',
+  providers: [UserService]
 })
 export class VierGewinntComponent {
   board: string[][] = Array.from({ length: 7 }, () => Array(6).fill(''));
@@ -17,10 +20,13 @@ export class VierGewinntComponent {
   leerPos: number = 5;
   isAnimating: boolean = false;
 
+  constructor(private userService: UserService,private appComponent: AppComponent){}
+
   ngOnInit() { }
 
   async handleClick(i: number) {
-
+    if(!this.checkUseername()) return;
+    if(this.rounds == 0) this.startGame();
     if (this.isAnimating || this.board[i][0] != '' || this.winner) return;
     this.rounds++;
     this.leerPos = 5;
@@ -30,7 +36,6 @@ export class VierGewinntComponent {
         break;
       }
     }
-
     this.isAnimating = true;
     await this.animation(i, this.leerPos);
 
@@ -45,6 +50,7 @@ export class VierGewinntComponent {
       if (el) {
         el.textContent = `${this.currentPlayer} won the game`;
         el.style.color = this.currentPlayer === 'X' ? 'var(--baby-blue)' : 'var(--vivid-pink)';
+        this.sendWinnerToDatabase(this.currentPlayer);
       }
     } else if (this.rounds == 42) {
       if (el) {
@@ -68,11 +74,6 @@ export class VierGewinntComponent {
     return 'inherit';
   }
 
-  dberstellen(){
-    
-
-
-  }
 
   checkWinner() {
     for (let row = 0; row < 6; row++) {
@@ -124,5 +125,36 @@ export class VierGewinntComponent {
 
       await new Promise(resolve => setTimeout(resolve, 100)); // 100ms Pause
     }
+  }
+
+  async sendWinnerToDatabase(winner: string){
+    const el = document.getElementById("PlayerOne") as HTMLSelectElement;
+    const el2 = document.getElementById("PlayerTwo") as HTMLSelectElement;
+    if(el&& el2){}
+
+    	if(winner=='X'){
+          this.userService.userWon(el.value,el2.value,"viergewinnt");
+      }else{
+        this.userService.userWon(el2.value,el.value,"viergewinnt");
+      }
+      await this.appComponent.updateTabelle();
+
+  }
+
+  checkUseername(){
+     const el = document.getElementById("PlayerOne") as HTMLSelectElement;
+    const el2 = document.getElementById("PlayerTwo") as HTMLSelectElement;
+    if(el.value == "Bitte auswählen" || el2.value == "Bitte auswählen") return false;
+    return true;
+
+  }
+  startGame(){
+    console.log("startet speil");
+    
+    const el = document.getElementById("PlayerOne") as HTMLSelectElement;
+    const el2 = document.getElementById("PlayerTwo") as HTMLSelectElement;
+    el.disabled = true;
+    el2.disabled = true;
+       
   }
 }
